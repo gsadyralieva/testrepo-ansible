@@ -30,6 +30,7 @@ install:
   pip install ansible
   EOF
 build_script:
+- curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
 - |-
   sudo -i -- << EOF
   set -eux

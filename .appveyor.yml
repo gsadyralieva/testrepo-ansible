@@ -28,7 +28,6 @@ install:
   ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
   pip install ansible
   EOF
-
 build_script:
 - |-
   sudo -i -- << EOF

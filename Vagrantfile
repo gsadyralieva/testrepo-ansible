@@ -9,6 +9,7 @@ Vagrant.configure(2) do |config|
   config.hostmanager.manage_guest = false
   config.vm.synced_folder ".", "/vagrant", :disabled => true
   config.vm.box = box_image
+  config.vm.hostname = hostname
   # Prevent TTY Errors (copied from laravel/homestead: "homestead.rb" file)... By default this is "bash -l".
   #config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
@@ -17,10 +18,6 @@ Vagrant.configure(2) do |config|
     domain.memory = 5120
     # Disable KVM acceleration (Appveyor does not support nested virtualization)
     domain.driver = "qemu"
-  end
-
-  config.vm.define "node1" do |config|
-    config.vm.hostname = hostname
   end
 
   config.vm.provision 'shell', inline: "install -m 0700 -d /root/.ssh/; echo #{ssh_pub_key} >> /root/.ssh/authorized_keys; chmod 0600 /root/.ssh/authorized_keys"

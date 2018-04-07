@@ -32,8 +32,11 @@ build_script:
 - |-
   sudo -i -- << EOF
   set -eux
+  virsh pool-list
+  sudo find /var/lib/libvirt -ls
+  sudo find /etc/libvirt -ls
   cd $APPVEYOR_BUILD_FOLDER
   VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
-  ansible -i "$VAGRANT_HOSTNAME"   all
+  ansible -i "$VAGRANT_HOSTNAME,"   all
   vagrant destroy -f
   EOF

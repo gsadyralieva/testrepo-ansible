@@ -1,0 +1,39 @@
+image: ubuntu
+
+environment:
+  global:
+    VAGRANT_URL: https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
+  matrix:
+    - VAGRANT_BOX: peru/ubuntu-16.04-server-amd64
+      VAGRANT_HOSTNAME: ubuntu-1604
+    - VAGRANT_BOX: peru/ubuntu-14.04-server-amd64
+      VAGRANT_HOSTNAME: ubuntu-1404
+    - VAGRANT_BOX: centos/7
+      VAGRANT_HOSTNAME: centos-7
+    - VAGRANT_BOX: centos/6
+      VAGRANT_HOSTNAME: centos-6
+
+install:
+- |-
+  sudo -i -- << EOF
+  set -eux
+  apt-get update -qq
+  apt-get install -qq -y ansible gcc libvirt-bin libvirt-dev qemu-system-x86 qemu-utils
+  wget -q -P /tmp/ $VAGRANT_URL
+  apt-get install -qq /tmp/vagrant*.deb
+  rm /tmp/vagrant*.deb
+  vagrant plugin install vagrant-hostmanager
+  vagrant plugin install vagrant-libvirt
+  install -m 0700 -d $HOME/.ssh
+  ssh-keygen -b 2048 -t rsa -f $HOME/.ssh/id_rsa -q -N ""
+  EOF
+
+build_script:
+- |-
+  sudo -i -- << EOF
+  set -eux
+  cd $APPVEYOR_BUILD_FOLDER
+  VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
+  ansible -i "$VAGRANT_HOSTNAME"   all
+  vagrant destroy -f
+  EOF

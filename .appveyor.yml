@@ -3,10 +3,6 @@ image: ubuntu
 environment:
   global:
     VAGRANT_URL: https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
-    ANSIBLE_PLAYBOOK: >
-      - hosts: all
-        roles:
-        - { role: "." }
 
   matrix:
     - VAGRANT_BOX: peru/ubuntu-16.04-server-amd64
@@ -47,17 +43,9 @@ build_script:
   </pool>
   EOF2
   virsh pool-start default
-  virsh pool-autostart default
-  virsh pool-list
-  sudo find /var/lib/libvirt -ls
-  sudo find /etc/libvirt -ls
   cd $APPVEYOR_BUILD_FOLDER
   VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
-  cat >> /tmp/ansible_playbook.yml << EOF2
-  - hosts: all
-    roles:
-      - { role: "." }
-  EOF2
-  ansible -i "$VAGRANT_HOSTNAME," /tmp/ansible_playbook.yml  all
+  ansible -m setup -i "$VAGRANT_HOSTNAME," $VAGRANT_HOSTNAME
+  ansible-playbook -i "$VAGRANT_HOSTNAME," tests/test.yml $VAGRANT_HOSTNAME
   vagrant destroy -f
   EOF

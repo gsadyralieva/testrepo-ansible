@@ -3,6 +3,11 @@ image: ubuntu
 environment:
   global:
     VAGRANT_URL: https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
+    ANSIBLE_PLAYBOOK: >
+      - hosts: all
+        roles:
+        - { role: "." }
+
   matrix:
     - VAGRANT_BOX: peru/ubuntu-16.04-server-amd64
       VAGRANT_HOSTNAME: ubuntu-1604
@@ -32,11 +37,27 @@ build_script:
 - |-
   sudo -i -- << EOF
   set -eux
+  echo $ANSIBLE_PLAYBOOK
+  virsh pool-define /dev/stdin <<EOF2
+  <pool type='dir'>
+    <name>default</name>
+    <target>
+      <path>/var/lib/libvirt/images</path>
+    </target>
+  </pool>
+  EOF2
+  virsh pool-start default
+  virsh pool-autostart default
   virsh pool-list
   sudo find /var/lib/libvirt -ls
   sudo find /etc/libvirt -ls
   cd $APPVEYOR_BUILD_FOLDER
   VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
-  ansible -i "$VAGRANT_HOSTNAME,"   all
+  cat >> /tmp/ansible_playbook.yml << EOF2
+  - hosts: all
+    roles:
+      - { role: "." }
+  EOF2
+  ansible -i "$VAGRANT_HOSTNAME," /tmp/ansible_playbook.yml  all
   vagrant destroy -f
   EOF

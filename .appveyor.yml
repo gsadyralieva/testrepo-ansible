@@ -31,7 +31,6 @@ install:
   EOF
 build_script:
 - |-
-  echo $VAGRANT_BOX
   sudo -i -- << EOF
   set -eux
   echo $ANSIBLE_PLAYBOOK
@@ -45,7 +44,7 @@ build_script:
   EOF2
   virsh pool-start default
   cd $APPVEYOR_BUILD_FOLDER
-  VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
+  VAGRANT_LOG=info VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
   ansible -m setup -i "$VAGRANT_HOSTNAME," $VAGRANT_HOSTNAME
   ansible-playbook -i "$VAGRANT_HOSTNAME," tests/test.yml $VAGRANT_HOSTNAME
   vagrant destroy -f

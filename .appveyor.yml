@@ -1,18 +1,20 @@
-image: ubuntu
+image: ubuntu1804
 
 environment:
   global:
-    VAGRANT_URL: https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
+    VAGRANT_URL: https://releases.hashicorp.com/vagrant/2.2.0/vagrant_2.2.0_x86_64.deb
 
   matrix:
-    - VAGRANT_BOX: peru/ubuntu-16.04-server-amd64
-      VAGRANT_HOSTNAME: ubuntu-1604
-    - VAGRANT_BOX: peru/ubuntu-14.04-server-amd64
-      VAGRANT_HOSTNAME: ubuntu-1404
-    - VAGRANT_BOX: centos/7
-      VAGRANT_HOSTNAME: centos-7
-    - VAGRANT_BOX: centos/6
-      VAGRANT_HOSTNAME: centos-6
+    - VAGRANT_BOX: peru/ubuntu-18.04-server-amd64
+      VAGRANT_HOSTNAME: ubuntu-1804
+#    - VAGRANT_BOX: peru/ubuntu-16.04-server-amd64
+#      VAGRANT_HOSTNAME: ubuntu-1604
+#    - VAGRANT_BOX: peru/ubuntu-14.04-server-amd64
+#      VAGRANT_HOSTNAME: ubuntu-1404
+#    - VAGRANT_BOX: centos/7
+#      VAGRANT_HOSTNAME: centos-7
+#    - VAGRANT_BOX: centos/6
+#      VAGRANT_HOSTNAME: centos-6
 
 install:
 - |-
